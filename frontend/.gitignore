@@ -9,6 +9,7 @@ dist/
 web-build/
 venv_name
 data
+test
 # Native
 *.orig.*
 *.jks
