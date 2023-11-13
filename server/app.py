@@ -1,11 +1,11 @@
 # Run command : flask run --host=0.0.0.0 --debug
-#For Production : gunicorn app:app
+# For Production : gunicorn app:app
 
 from flask import Flask, request, jsonify
 import requests
 import cv2
 import numpy as np
-from tensorflow.keras.models import load_model
+from keras.models import load_model
 import os
 from flask_cors import CORS,cross_origin
 from data.dataClasses import class_names
@@ -17,6 +17,7 @@ app = Flask(__name__)
 
 # Load your pre-trained model
 model_path = os.path.join(os.path.dirname(__file__), 'models', 'imageclassifier.h5')
+print(model_path)
 model = load_model(model_path)
 
 # Define class names
@@ -26,7 +27,7 @@ model = load_model(model_path)
 # print(class_names)
 
 @app.route('/predict', methods=['POST'])
-@cross_origin()
+# @cross_origin()
 def predict():
     try:
         # Get the image URL from the request
