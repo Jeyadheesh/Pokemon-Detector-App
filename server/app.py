@@ -25,6 +25,9 @@ model = load_model(model_path)
 # class_names = os.listdir('./data/PokemonData')
 
 # print(class_names)
+@app.route('/')
+def healthCheck():
+    return "Works"
 
 @app.route('/predict', methods=['POST'])
 # @cross_origin()
@@ -65,5 +68,6 @@ def predict():
         print(e)
         return jsonify({'error': str(e)}), 500
 
-if __name__ == '__main__':
-    app.run(debug=False)
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host="localhost", port=8080)
