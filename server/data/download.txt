@@ -1,0 +1,4 @@
+Download the required Dataset and put inside this folder as "data/PokemonData/[Pokemon1,Pokemon2,....,PokemonN]"
+
+Download Link :
+https://www.kaggle.com/datasets/lantian773030/pokemonclassification

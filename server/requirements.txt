@@ -2,13 +2,13 @@ Flask
 Flask-Cors
 requests
 numpy
-tensorflow
+# tensorflow
 opencv-python
 gunicorn
 # Flask==3.0.0
 # Flask-Cors==4.0.0
 # requests==2.31.0
 # numpy==1.26.1
-# tensorflow==2.14.0
+tensorflow==2.14.0
 # opencv-python==4.8.1.78
 # gunicorn==21.2.0
