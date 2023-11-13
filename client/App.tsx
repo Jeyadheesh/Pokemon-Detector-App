@@ -7,11 +7,14 @@ import Home from "./screens/Home";
 import Result from "./screens/Result";
 import CameraImagePickerButton from "./components/CameraImagePickerButton";
 import LoadingPage from "./components/LoadingPage";
+import { useColorScheme } from "nativewind";
+
 // import CameraImagePickerButton fromm
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const { colorScheme } = useColorScheme();
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
@@ -21,7 +24,7 @@ export default function App() {
             // header: (props) => <ChatBoxHeader {...props} />,
           }}
           name="Home"
-          component={Result}
+          component={Home}
         />
         <Stack.Screen
           options={{ headerShown: false }}
@@ -29,6 +32,7 @@ export default function App() {
           component={Result}
         />
       </Stack.Navigator>
+      <StatusBar style="auto" animated={true} />
     </NavigationContainer>
   );
 }

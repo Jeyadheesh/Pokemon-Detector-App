@@ -1,27 +1,66 @@
 import { View, Text, Image } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import LoadingPage from "../components/LoadingPage";
+import axios from "axios";
 
-const Result = () => {
-  const [image, setImage] = useState(
-    "https://firebasestorage.googleapis.com/v0/b/pokemondetectorapp.appspot.com/o/images%2F2023-10-29T14%3A53%3A41.508Z?alt=media&token=538cb560-0efa-49f0-85f2-a6d673905005"
-  );
+interface Props {
+  route: any;
+  navigation: any;
+}
+
+const Result = ({ route, navigation }: Props) => {
+  const { imageUrl } = route.params;
+
+  const [image, setImage] = useState(imageUrl);
+  const [resData, setResData] = useState(imageUrl);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getPredictedData = async () => {
+    try {
+      const resData = await axios.post(
+        "http://192.168.43.66:5000/predict",
+        {
+          image_url: image,
+        },
+        { withCredentials: true }
+      );
+      const data = resData.data;
+      console.log("axios data", data);
+      setResData(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("aa", error.message);
+    }
+  };
+
+  useEffect(() => {
+    console.log("in in");
+
+    getPredictedData();
+  }, []);
 
   return (
     <SafeAreaView>
-      <View className="h-screen flex-col justify-center items-center gap-10">
-        <View className="w-[85%] max-h-80 borde border-black">
-          <Image
-            resizeMode="contain"
-            className="w-full h-full"
-            source={{ uri: image }}
-          />
-        </View>
+      {isLoading ? (
+        <LoadingPage imageUrl={image} />
+      ) : (
+        <View className="h-screen relative dark:bg-gray-900 flex-col justify-center  items-center ">
+          <View className="w-[75%] max-h-80">
+            <Image
+              resizeMode="contain"
+              className="w-full h-full object-contain"
+              source={{ uri: image }}
+            />
+          </View>
 
-        <View>
-          <Text className="text-3xl font-bold text-blue-700">DKfsjd</Text>
+          <View className="mt-7">
+            <Text className="text-3xl  font-bold text-blue-500 dark:text-cyan-300">
+              💥 {resData.prediction} 💥
+            </Text>
+          </View>
         </View>
-      </View>
+      )}
     </SafeAreaView>
   );
 };

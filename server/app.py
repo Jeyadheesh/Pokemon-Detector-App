@@ -1,19 +1,27 @@
+# Run command : flask run --host=0.0.0.0 --debug
+#For Production : gunicorn app:app
+
 from flask import Flask, request, jsonify
 import requests
 import cv2
 import numpy as np
 from tensorflow.keras.models import load_model
 import os
+from flask_cors import CORS,cross_origin
 
 app = Flask(__name__)
+# CORS(app)
+# cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
 
 # Load your pre-trained model
-model = load_model('client\server\models\imageclassifier.h5')
+model = load_model('./models/imageclassifier.h5')
 
 # Define class names
-class_names = os.listdir('client\server\data\PokemonData')
+class_names = os.listdir('./data/PokemonData')
 
 @app.route('/predict', methods=['POST'])
+@cross_origin()
 def predict():
     try:
         # Get the image URL from the request
@@ -52,4 +60,4 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)

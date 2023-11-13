@@ -1,2 +1,4 @@
 data
 logs
+.vercel
+__pycache__

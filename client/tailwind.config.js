@@ -6,7 +6,11 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        example: ['require("./assets/fonts/RobotoSlab-Regular.ttf")'],
+      },
+    },
   },
   plugins: [],
 };

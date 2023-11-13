@@ -18,9 +18,12 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import Feather from "react-native-vector-icons/Feather";
 
-const ImagePickerButton = () => {
+interface Props {
+  setImageUrl: any;
+}
+
+const ImagePickerButton = ({ setImageUrl }: Props) => {
   const [imageUri, setImageUri] = useState<null | any>(null);
-  const [imageUrl, setImageUrl] = useState<null | any>(null);
 
   const pickGalleryImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -49,7 +52,7 @@ const ImagePickerButton = () => {
         mediaTypes: MediaTypeOptions.Images,
         allowsEditing: false,
         aspect: [4, 3],
-        quality: 0.5,
+        quality: 0.2,
       });
 
       console.log(result.assets[0].uri);
@@ -67,7 +70,7 @@ const ImagePickerButton = () => {
       const response = await fetch(imageUri);
       const blob = await response.blob();
       // console.log(blob.size);
-      const imagesRef = ref(storage, "images/" + new Date().toISOString());
+      const imagesRef = ref(storage, "image/");
       const uploadTask = uploadBytesResumable(imagesRef, blob);
 
       uploadTask.on("state_changed", async (snapshot) => {
@@ -86,12 +89,8 @@ const ImagePickerButton = () => {
     setDownloadUrl();
   }, [imageUri]);
 
-  useEffect(() => {
-    console.log(imageUrl);
-  }, [imageUrl]);
-
   return (
-    <View className="flex-row mt-10 borde border-black w-[60%] justify-between">
+    <View className="flex-row mt-10 borde  border-black w-[60%] justify-between">
       <View className="text-center flex-col items-center gap-1">
         <TouchableOpacity
           onPress={pickGalleryImage}
@@ -101,7 +100,9 @@ const ImagePickerButton = () => {
         >
           <FontAwesome5 name="images" color={"white"} size={22} />
         </TouchableOpacity>
-        <Text className="font-bold">Gallery</Text>
+        <Text className="dark:text-gray-200 font-example font-bold">
+          Gallery
+        </Text>
       </View>
 
       <View className="text-center flex-col items-center gap-1">
@@ -113,7 +114,7 @@ const ImagePickerButton = () => {
         >
           <Feather name="camera" color={"white"} size={22} />
         </TouchableOpacity>
-        <Text className="font-bold">Camera</Text>
+        <Text className="dark:text-gray-200 font-bold">Camera</Text>
       </View>
     </View>
   );
