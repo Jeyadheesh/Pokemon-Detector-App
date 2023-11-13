@@ -2,3 +2,4 @@ data/PokemonData
 logs
 .vercel
 __pycache__
+venv

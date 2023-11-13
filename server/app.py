@@ -8,6 +8,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 import os
 from flask_cors import CORS,cross_origin
+from data.dataClasses import class_names
 
 app = Flask(__name__)
 # CORS(app)
@@ -15,10 +16,14 @@ app = Flask(__name__)
 
 
 # Load your pre-trained model
-model = load_model('./models/imageclassifier.h5')
+model_path = os.path.join(os.path.dirname(__file__), 'models', 'imageclassifier.h5')
+model = load_model(model_path)
 
 # Define class names
-class_names = os.listdir('./data/PokemonData')
+# data_path = os.path.join(os.path.dirname(__file__), 'data', 'PokemonData')
+# class_names = os.listdir('./data/PokemonData')
+
+# print(class_names)
 
 @app.route('/predict', methods=['POST'])
 @cross_origin()
