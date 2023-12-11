@@ -13,17 +13,24 @@ import {
   launchCameraAsync,
 } from "expo-image-picker";
 import { storage } from "../config/firebase";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 import Feather from "react-native-vector-icons/Feather";
 
 interface Props {
+  imageUrl: any;
   setImageUrl: any;
 }
 
-const ImagePickerButton = ({ setImageUrl }: Props) => {
+const ImagePickerButton = ({ imageUrl, setImageUrl }: Props) => {
   const [imageUri, setImageUri] = useState<null | any>(null);
+  const imagesRef = ref(storage, "image/");
 
   const pickGalleryImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -46,7 +53,6 @@ const ImagePickerButton = ({ setImageUrl }: Props) => {
   };
 
   const pickCameraImage = async () => {
-    // No permissions request is necessary for launching the image library
     try {
       let result: any = await launchCameraAsync({
         mediaTypes: MediaTypeOptions.Images,
@@ -55,13 +61,17 @@ const ImagePickerButton = ({ setImageUrl }: Props) => {
         quality: 0.2,
       });
 
-      console.log(result.assets[0].uri);
+      if (result && result.assets && result.assets.length > 0) {
+        console.log(result.assets[0].uri);
 
-      if (!result.canceled) {
-        setImageUri(result.assets[0].uri);
+        if (!result.canceled) {
+          setImageUri(result.assets[0].uri);
+        }
+      } else {
+        console.log("Result not found!!!");
       }
     } catch (error) {
-      console.log(error.message);
+      console.log("pickCameraImage Error : ", error.message);
     }
   };
 
@@ -69,8 +79,9 @@ const ImagePickerButton = ({ setImageUrl }: Props) => {
     try {
       const response = await fetch(imageUri);
       const blob = await response.blob();
+      // console.log("Response Status:", response.status);
       // console.log(blob.size);
-      const imagesRef = ref(storage, "image/");
+
       const uploadTask = uploadBytesResumable(imagesRef, blob);
 
       uploadTask.on("state_changed", async (snapshot) => {
@@ -81,13 +92,19 @@ const ImagePickerButton = ({ setImageUrl }: Props) => {
         );
       });
     } catch (err) {
-      console.log(err.message);
+      console.log("setDownloadUrl Error : ", err.message);
     }
   };
 
   useEffect(() => {
-    setDownloadUrl();
+    if (imageUri != null) {
+      setDownloadUrl();
+    }
   }, [imageUri]);
+
+  useEffect(() => {
+    setImageUri(null);
+  }, []);
 
   return (
     <View className="flex-row mt-10 borde  border-black w-[60%] justify-between">

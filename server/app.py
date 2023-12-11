@@ -18,7 +18,8 @@ app = Flask(__name__)
 # Load your pre-trained model
 model_path = os.path.join(os.path.dirname(__file__), 'models', 'imageclassifier.h5')
 print(model_path)
-model = load_model(model_path)
+model = load_model(model_path,compile=False)
+# print(model.get_config())
 
 # Define class names
 # data_path = os.path.join(os.path.dirname(__file__), 'data', 'PokemonData')

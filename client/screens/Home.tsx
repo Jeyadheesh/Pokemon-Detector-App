@@ -9,14 +9,19 @@ import React, { useEffect, useState } from "react";
 import ImagePickerButton from "../components/ImagePickerButton";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
-
+import { useNavigation, useRoute } from "@react-navigation/native";
 import BgImg from "../assets/bg2.png";
 import DarkBtn from "../components/DarkBtn";
+import { deleteObject, ref } from "firebase/storage";
+import { storage } from "../config/firebase";
 
 const Home = ({ navigation }: any) => {
   const [imageUrl, setImageUrl] = useState<null | any>(null);
+  const navigation1 = useNavigation();
+  const imagesRef = ref(storage, "image/");
 
   useEffect(() => {
+    console.log("Home : ", imageUrl);
     if (imageUrl != null) {
       console.log(imageUrl);
       navigation.navigate("Result", {
@@ -28,6 +33,24 @@ const Home = ({ navigation }: any) => {
   // useEffect(() => {
   //   console.log(colorScheme);
   // }, [colorScheme]);
+
+  useEffect(() => {
+    try {
+      console.log(1);
+
+      const unsubscribe = navigation1.addListener("focus", () => {
+        setImageUrl(null);
+        deleteObject(imagesRef);
+      });
+
+      return () => {
+        unsubscribe();
+        console.log("2");
+      };
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [navigation1]);
 
   return (
     <SafeAreaView>
@@ -62,7 +85,7 @@ const Home = ({ navigation }: any) => {
         </View>
 
         {/* Buttons */}
-        <ImagePickerButton setImageUrl={setImageUrl} />
+        <ImagePickerButton setImageUrl={setImageUrl} imageUrl={imageUrl} />
 
         {/* <View>
           <Button
